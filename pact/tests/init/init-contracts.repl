@@ -1,0 +1,4 @@
+(load "init-shares.repl")
+(load "init-ipo.repl")
+
+(print "Loaded smart contracts.")

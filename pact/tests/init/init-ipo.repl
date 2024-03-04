@@ -1,0 +1,28 @@
+(env-data { 
+    "init": true, 
+    "shares-admin-keyset": { "keys": [ contract-keys.ADMIN ], "pred": "keys-all" }
+})
+   
+(env-sigs [ { "key": contract-keys.ADMIN, "caps": [] } ])
+
+(begin-tx)
+
+(env-gas 0)
+(load "../../ipo.pact")
+(print (format "(load IPO gas cost: {}" [(env-gas)]))
+
+(commit-tx)
+
+(begin-tx)
+
+(env-sigs [
+    {"key": contract-keys.ADMIN, "caps": [(smartpacts.shares-ipo.GOVERNANCE)]},
+    {"key": contract-keys.MANAGER, "caps": [(smartpacts.shares.SHARES-MANAGER)]}
+  ])
+
+(env-gas 0)
+(smartpacts.shares-ipo.initialize)
+(print (format "IPO initialize gas cost: {}" [(env-gas)]))
+(print "get-balance 'IPO'")
+(smartpacts.shares.get-balance smartpacts.shares-ipo.IPO_ACCOUNT)
+(commit-tx)

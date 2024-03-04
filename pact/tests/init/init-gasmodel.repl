@@ -1,0 +1,7 @@
+(begin-tx)
+
+(env-gasmodel "table")
+(env-gaslimit 1000000)
+
+(commit-tx)
+(print "Initialized gas model 'table'")

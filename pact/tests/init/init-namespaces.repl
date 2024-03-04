@@ -1,0 +1,12 @@
+(begin-tx)
+(module test-ns GOVERNANCE
+  (defcap GOVERNANCE () true)
+  (defconst NAMESPACE_GUARD (create-user-guard (succeed)))
+  (defun succeed () true)
+)
+
+(define-namespace "smartpacts"  test-ns.NAMESPACE_GUARD test-ns.NAMESPACE_GUARD)
+(define-namespace "free"  test-ns.NAMESPACE_GUARD test-ns.NAMESPACE_GUARD)
+
+(commit-tx)
+(print "Loaded 'smartpacts' & 'free' namespaces.")

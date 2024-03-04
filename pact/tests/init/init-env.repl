@@ -1,0 +1,7 @@
+(load "init-namespaces.repl")
+(load "init-coin.repl")
+(load "init-keys.repl")
+(load "init-kda-accounts.repl")
+(load "init-gasmodel.repl")
+
+(print "Prepare environment")

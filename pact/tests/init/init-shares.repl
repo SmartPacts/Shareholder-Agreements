@@ -1,0 +1,24 @@
+(env-data { 
+    "init": true, 
+    "shares-admin-keyset": { "keys": [ contract-keys.ADMIN ], "pred": "keys-all" }
+})
+   
+(env-sigs [ { "key": contract-keys.ADMIN, "caps": [] } ])
+
+(begin-tx)
+
+(env-gas 0)
+(load "../../shares.pact")
+(print (format "(load shares gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(begin-tx)
+
+(env-sigs [
+    {"key": contract-keys.ADMIN, "caps": [(smartpacts.shares.GOVERNANCE)]}
+  ])
+
+(env-gas 0)
+(smartpacts.shares.initialize)
+(print (format "SHARES initialize gas cost: {}" [(env-gas)]))
+(commit-tx)

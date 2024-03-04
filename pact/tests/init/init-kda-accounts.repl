@@ -1,0 +1,16 @@
+
+(begin-tx)
+(coin.create-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
+(coin.create-account k.BOB (describe-keyset "smartpacts.bob-keyset"))
+(commit-tx)
+
+(print "Created KDA accounts 'k-alice' & 'k-bob'.")
+
+(begin-tx)
+(test-capability (coin.COINBASE))
+(coin.coinbase k.ALICE (describe-keyset "smartpacts.alice-keyset") 100000.0)
+(coin.coinbase k.BOB (describe-keyset "smartpacts.bob-keyset") 100000.0)
+(commit-tx)
+
+(print "Funded KDA accounts with 100,000.0 KDA each.")
+

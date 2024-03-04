@@ -1,0 +1,50 @@
+
+(begin-tx)
+(module users-keys GOVERNANCE
+  (defcap GOVERNANCE () true)
+  (defconst ALICE "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca")
+  (defconst BOB "6be2f485a7af75fedb4b7f153a903f7e6000ca4aa501179c91a2450b777bd2a7")
+)
+(commit-tx)
+
+
+(env-data { 
+  "alice" : [ users-keys.ALICE ], 
+  "bob": [ users-keys.BOB ] })
+
+(begin-tx)
+(namespace "smartpacts")
+(define-keyset "smartpacts.alice-keyset" (read-keyset "alice"))
+(define-keyset "smartpacts.bob-keyset" (read-keyset "bob"))
+(commit-tx)
+
+(print "Registered keysets 'alice-keyset' & 'bob-keyset' under ns smartpacts.")
+(env-data {})
+
+(begin-tx)
+(module contract-keys GOVERNANCE
+  (defcap GOVERNANCE () true)
+  (defconst ADMIN "476f5e8a97ad059ab4a585666252db4cc65404f0dbec9db72257d99fe276ebef")
+  (defconst MANAGER "524c0671ebd35bcfe4db5d0b46f89f12fcdfef1510820b1725640c63353aa1bc")
+)
+(commit-tx)
+
+(env-data { 
+    "admin" : [ contract-keys.ADMIN ],
+    "manager" : [ contract-keys.MANAGER ] })
+
+(begin-tx)
+(namespace "smartpacts")
+(define-keyset "smartpacts.shares-admin-keyset" (read-keyset "admin"))
+(define-keyset "smartpacts.shares-manager-keyset" (read-keyset "manager"))
+(commit-tx)
+
+(print "Registered keysets 'shares-admin-keyset' & 'shares-manager-keyset' under ns smartpacts")
+
+(begin-tx)
+(module k GOVERNANCE
+  (defcap GOVERNANCE () true)
+  (defconst ALICE (create-principal (describe-keyset "smartpacts.alice-keyset")))
+  (defconst BOB (create-principal (describe-keyset "smartpacts.bob-keyset")))
+)
+(commit-tx)

@@ -1,0 +1,9 @@
+(begin-tx)
+(load "../chainweb-node/fungible-v2.pact")
+(load "../chainweb-node/fungible-xchain-v1.pact")
+(load "../chainweb-node/coin-v5.pact")
+
+(create-table coin.coin-table)
+(create-table coin.allocation-table)
+(commit-tx)
+(print "Loaded essential Kadena contracts.")

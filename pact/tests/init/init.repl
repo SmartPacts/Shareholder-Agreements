@@ -1,0 +1,5 @@
+(load "init-env.repl")
+(load "init-contracts.repl")
+
+
+(print "Loaded full environment")

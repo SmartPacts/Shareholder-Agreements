@@ -143,6 +143,10 @@
         [shares-amount shares-reciver kda-amount])))                            ;                                                                                                     ;
 )                                                                               ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
+(defun get-balance ()                                                           ; "get-balance" requires no imputs                                                                    ;
+@doc "Returns Smart Pacts' Initial Public Offering current balance."            ; Public Documentation "Returns Smart Pacts' Initial Public Offering current balance.".               ;
+  (smartpacts.shares.get-balance IPO_ACCOUNT)                                   ; Returns balance of Initial Public Offering Shares Account.                                          ;
+)                                                                               ;                                                                                                     ;
 ; ======= GENESIS INITIAL PUBLIC OFFER FUNCTIONS ============================== ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
 (defun initialize:string ()                                                     ; "initialize" requires no imputs                                                                     ;

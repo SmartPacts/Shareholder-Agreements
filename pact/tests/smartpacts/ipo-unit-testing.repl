@@ -40,6 +40,6 @@
 (print (format "shares-details 'Alice' gas cost: {}" [(env-gas)]))
 (coin.get-balance k.ALICE)
 (print (format "coin.get-balance 'Alice' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.get-balance smartpacts.shares-ipo.IPO_ACCOUNT)
+(smartpacts.shares-ipo.get-balance)
 (print (format "get-balance 'IPO Account' gas cost: {}" [(env-gas)]))
 (commit-tx)

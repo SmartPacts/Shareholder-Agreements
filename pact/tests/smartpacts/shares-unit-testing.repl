@@ -184,9 +184,22 @@
 (print (format "coin.get-balance 'Shares Account'gas cost: {}" [(env-gas)]))
 (commit-tx)
 
+(env-data {})
+(env-sigs [])
+
 (begin-tx)
 (env-gas 0)
 (env-chain-data { "block-time" : (time "2025-03-03T06:00:00Z") })
+(smartpacts.shares.get-pending-dividends)
+(print (format "get-pending-dividends gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-gas 0)
+(env-chain-data { "block-time" : (time "2025-03-03T06:30:00Z") })
 (env-sigs [{"key": users-keys.BOB, "caps": [(smartpacts.shares.TRANSFER k.BOB k.ALICE 50.0)]}])
 (smartpacts.shares.transfer k.BOB k.ALICE 50.0)
 (print (format "transfer 'Bob' to 'Alice' 50.0 shares gas cost: {}" [(env-gas)]))
@@ -200,6 +213,16 @@
 (print (format "coin.get-balance 'Bob' gas cost: {}" [(env-gas)]))
 (coin.get-balance smartpacts.shares.SHARES_ACCOUNT)
 (print (format "coin.get-balance 'Shares Account'gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-gas 0)
+(env-chain-data { "block-time" : (time "2025-03-03T07:00:00Z") })
+(smartpacts.shares.get-pending-dividends)
+(print (format "get-pending-dividends gas cost: {}" [(env-gas)]))
 (commit-tx)
 
 ;pending

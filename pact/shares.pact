@@ -439,7 +439,7 @@
     , "guard": guard })                                                         ; Returns Shares Account Guard definition.                                                            ;
 )                                                                               ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
-(defun shares-details:object{shares-accounts} ( account:string )                ; "shares-details" Returns "shares-accounts" Schema details and requires Shares Account.              ;
+(defun get-shares-details:object{shares-accounts} ( account:string )            ; "get-shares-details" Returns "shares-accounts" Schema details and requires Shares Account.              ;
 @doc "Returns Shares Account details."                                          ; Public Documentation "Returns Shares Account details.".                                             ;
   (with-read ledger account                                                     ; Reads from Ledger table the Shares Account following information:                                   ;
     { "account" := account                                                      ; Reads the Account's name.                                                                           ;

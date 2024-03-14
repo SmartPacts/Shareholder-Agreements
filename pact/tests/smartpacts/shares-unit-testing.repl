@@ -265,8 +265,19 @@
 (print (format "get-shares-details 'Foo' gas cost: {}" [(env-gas)]))
 (commit-tx)
 
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:00:00Z")})
+(env-sigs [{"key": users-keys.FOO, "caps": [(smartpacts.shares.TRANSFER k.BOB k.FOO 10.0)]}])
+(smartpacts.shares.transfer-create k.BOB k.FOO (describe-keyset "smartpacts.foo-keyset") 10.0)
+(print (format "transfer-create from 'Bob' to 'Foo' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.FOO)
+(print (format "get-shares-details 'Foo' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
 ;pending
-;transfer create -interface
 ;create account -interface
 ;details -interface
 ;rotate - interface

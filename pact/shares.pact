@@ -410,8 +410,8 @@
     , "expiration" : expiration })                                              ; Returns Expiration date.                                                                            ;
 )                                                                               ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
-(defun vote:string (account:string proposal:string)                             ; "kda-rotate-account" requires Account and new KDA Address.                                          ;
-@doc "Vote for an active Poposal"                                               ; Public Documentation "Update Shares Account's KDA Address.".                                        ;
+(defun vote:string (account:string proposal:string)                             ; "vote" requires Account and new KDA Address.                                                        ;
+@doc "Vote for an active Poposal."                                              ; Public Documentation "Vote for an active Poposal.".                                                 ;
   (let ((active-proposals (map (at "proposal") (get-active-proposals))))        ; let "active-proposal" be a list of proposal names from the active proposals details                 ;
     (enforce (contains proposal active-proposals) "Invalid Proposal")           ; Enforce that the proposal to vote is in active proposal list. Returns error message if fails        ;
     (with-capability (VOTE account)                                             ; With Capability VOTE for Account,                                                                   ;

@@ -2,6 +2,8 @@
 (begin-tx)
 (coin.create-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
 (coin.create-account k.BOB (describe-keyset "smartpacts.bob-keyset"))
+(coin.create-account k.FOO (describe-keyset "smartpacts.foo-keyset"))
+(coin.create-account k.BAR (describe-keyset "smartpacts.bar-keyset"))
 (commit-tx)
 
 (print "Created KDA accounts 'k-alice' & 'k-bob'.")

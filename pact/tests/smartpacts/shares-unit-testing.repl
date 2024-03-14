@@ -270,9 +270,21 @@
 
 (begin-tx)
 (env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:00:00Z")})
-(env-sigs [{"key": users-keys.FOO, "caps": [(smartpacts.shares.TRANSFER k.BOB k.FOO 10.0)]}])
-(smartpacts.shares.transfer-create k.BOB k.FOO (describe-keyset "smartpacts.foo-keyset") 10.0)
-(print (format "transfer-create from 'Bob' to 'Foo' gas cost: {}" [(env-gas)]))
+(env-sigs [{"key": users-keys.FOO, "caps": [(smartpacts.shares.ROTATE k.FOO)]}])
+(smartpacts.shares.kda-rotate-account k.FOO k.FOO)
+(print (format "kda-rotate-account from 'Bob' to 'Foo' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.FOO)
+(print (format "get-shares-details 'Foo' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:00:00Z")})
+(env-sigs [{"key": users-keys.FOO, "caps": [(smartpacts.shares.ROTATE k.FOO)]}])
+(smartpacts.shares.rotate k.FOO (describe-keyset "smartpacts.bar-keyset"))
+(print (format "rotate guard from 'Foo' to 'Bar' gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-shares-details k.FOO)
 (print (format "get-shares-details 'Foo' gas cost: {}" [(env-gas)]))
 (commit-tx)
@@ -281,7 +293,5 @@
 ;create account -interface
 ;details -interface
 ;rotate - interface
-;kda-rotate
 ;release dividends
-;get pending dividends
 ;utility functions

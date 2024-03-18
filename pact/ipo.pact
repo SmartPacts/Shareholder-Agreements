@@ -98,7 +98,7 @@
         (kda-account                                                            ; "receiver-kda-accoint" as                                                                           ;
           (smartpacts.shares.get-kda-account receiver)))                        ; the KDA Address associated to the Shares Revicer's Account                                          ;
       (coin.enforce-unit kda-amount)                                            ; Enforce the total KDA amount to send is in compliance with the Coin Contract                        ;
-      (coin.validate-account kda-account)                                       ; Validate with Shares' Contract function that the Shares receiver Account is in complience.          ;
+      (coin.validate-account kda-account)                                       ; Validate with Coin's' Contract function that the KDA receiver Account is in complience.             ;
       (install-capability                                                       ; Instal Capability TRANSFER from Shares Module                                                       ;
         (smartpacts.shares.TRANSFER IPO_ACCOUNT receiver amount))               ; From IPO Account to Shares receiver's Account with Shares Amount to buy.                            ;
       (install-capability                                                       ; Instal Capability TRANSFER from Coin Module                                                         ;
@@ -126,13 +126,14 @@
     (smartpacts.shares.release-allocation IPO_ACCOUNT))                         ; Release the Acollation to the IPO Shares Account.                                                   ;
 )                                                                               ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
-(defun get-funds (account:string)                                               ; "get-funds" require a Share account                                                                 ;
+(defun get-funds (kda-account:string)                                           ; "get-funds" require a Share account                                                                 ;
 @doc "Transfers funds from IPO account to input account."                       ; Public Documentation "Transfers funds from IPO account to input account."                           ;
+(coin.validate-account kda-account)                                             ; Validate with Coin's' Contract function that the KDA receiver Account is in complience.             ;
   (with-capability (SHARES-MANAGER)                                             ; With Capability SHARES-MANAGER and                                                                  ;
     (with-capability (IPO-OWNERSHIP)                                            ; With Capability IPO-OWNERSHIP granted                                                               ;
       (install-capability                                                       ; install Capability TRANSFER                                                                         ;
-        (coin.TRANSFER IPO_ACCOUNT account (coin.get-balance IPO_ACCOUNT)))     ; from IPO Account to provided account with the total IPO balance and                                 ;
-      (coin.transfer IPO_ACCOUNT account (coin.get-balance IPO_ACCOUNT))))      ; execute transfer.                                                                                   ;
+        (coin.TRANSFER IPO_ACCOUNT kda-account (coin.get-balance IPO_ACCOUNT))) ; from IPO Account to provided account with the total IPO balance and                                 ;
+      (coin.transfer IPO_ACCOUNT kda-account (coin.get-balance IPO_ACCOUNT))))  ; execute transfer.                                                                                   ;
 )                                                                               ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
 )                                                                               ;                                                                                                     ;

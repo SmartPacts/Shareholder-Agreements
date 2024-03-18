@@ -4,7 +4,7 @@
 (env-sigs [])
    
 (begin-tx)
-(env-chain-data { "block-time" : (time "2024-03-03T00:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T00:00:00Z") })
 (smartpacts.shares.get-balance smartpacts.shares.SHARES_ACCOUNT)
 (print (format "get-balance 'Shares Account' gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-balance smartpacts.shares-ipo.IPO_ACCOUNT)
@@ -15,13 +15,13 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T00:30:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T00:30:00Z") })
 (smartpacts.shares.create-shares-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
 (print (format "create-shares-account 'Alice' gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-balance k.ALICE)
 (print (format "get-balance 'Alice' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.ALICE)
-(print (format "shares-details 'Alice' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.ALICE)
+(print (format "get-shares-details 'Alice' gas cost: {}" [(env-gas)]))
 (commit-tx)
 
 (env-data {})
@@ -29,7 +29,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T01:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T01:00:00Z") })
 (env-sigs [{"key": contract-keys.MANAGER, "caps": [(smartpacts.shares.SHARES-MANAGER)]}])
 (smartpacts.shares.create-allocation k.BOB (time "2024-03-03T01:30:00Z") (describe-keyset "smartpacts.bob-keyset") 1000.0)
 (print (format "create-allocation 'Bob' gas cost: {}" [(env-gas)]))
@@ -42,7 +42,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T01:30:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T01:30:00Z") })
 (smartpacts.shares.get-allocation-balance k.BOB)
 (print (format "get-allocation-balance 'Bob' gas cost: {}" [(env-gas)]))
 (commit-tx)
@@ -52,7 +52,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T02:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T02:00:00Z") })
 (smartpacts.shares.release-allocation k.BOB)
 (print (format "release-allocation 'Bob' gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-balance k.BOB)
@@ -61,32 +61,32 @@
 (print (format "get-allocation-balance 'Bob' gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-balance smartpacts.shares.ALLOCATIONS_ACCOUNT)
 (print (format "get-balance 'Allocations Account' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.BOB)
-(print (format "shares-details 'Bob' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.BOB)
+(print (format "get-shares-details 'Bob' gas cost: {}" [(env-gas)]))
 (commit-tx)
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T02:30:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T02:30:00Z") })
 (env-sigs [{"key": users-keys.BOB, "caps": [(smartpacts.shares.TRANSFER k.BOB k.ALICE 50.0)]}])
 (smartpacts.shares.transfer k.BOB k.ALICE 50.0)
 (print (format "transfer 'Bob' to 'Alice' 50.0 shares gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.BOB)
-(print (format "shares-details 'Bob' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.ALICE)
-(print (format "shares-details 'Alice' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.BOB)
+(print (format "get-shares-details 'Bob' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.ALICE)
+(print (format "get-shares-details 'Alice' gas cost: {}" [(env-gas)]))
 (commit-tx)
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T03:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T03:00:00Z") })
 (env-sigs [{"key": users-keys.BOB, "caps": [(smartpacts.shares.TRANSFER k.BOB k.ALICE 50.0)]}])
 (smartpacts.shares.transfer k.BOB k.ALICE 50.0)
 (print (format "transfer 'Bob' to 'Alice' 50.0 shares gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.BOB)
-(print (format "shares-details 'Bob' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.ALICE)
-(print (format "shares-details 'Alice' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.BOB)
+(print (format "get-shares-details 'Bob' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.ALICE)
+(print (format "get-shares-details 'Alice' gas cost: {}" [(env-gas)]))
 (commit-tx)
 
 (env-data {})
@@ -94,7 +94,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T03:30:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T03:30:00Z") })
 (env-sigs [{"key": contract-keys.MANAGER, "caps": [ (smartpacts.shares.SHARES-MANAGER) ]}])
 (smartpacts.shares.add-proposal "proposal-1" (time "2024-03-03T04:00:00Z") (time "2024-03-04T04:00:00Z"))
 (print (format "add-proposal 'proposal-1' gas cost: {}" [(env-gas)]))
@@ -109,7 +109,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T04:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T04:00:00Z") })
 (smartpacts.shares.get-active-proposals)
 (print (format "get-active-proposals gas cost: {}" [(env-gas)]))
 (commit-tx)
@@ -119,7 +119,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T04:30:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T04:30:00Z") })
 (env-sigs [{"key": users-keys.BOB, "caps": [ (smartpacts.shares.VOTE k.BOB) ]}])
 (smartpacts.shares.vote k.BOB "proposal-1")
 (print (format "vote 'Bob' 'proposal-1' gas cost: {}" [(env-gas)]))
@@ -133,7 +133,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T05:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T05:00:00Z") })
 (smartpacts.shares.get-active-proposals)
 (print (format "get-active-proposals gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-proposal-details "proposal-1")
@@ -142,10 +142,10 @@
 (print (format "get-proposal-details 'proposal-2' gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-proposal-details "proposal-3")
 (print (format "get-proposal-details 'proposal-3' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.BOB)
-(print (format "shares-details 'Bob' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.ALICE)
-(print (format "shares-details 'Alice' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.BOB)
+(print (format "get-shares-details 'Bob' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.ALICE)
+(print (format "get-shares-details 'Alice' gas cost: {}" [(env-gas)]))
 (commit-tx)
 
 (env-data {})
@@ -153,7 +153,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T05:30:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T05:30:00Z") })
 (coin.get-balance k.BOB)
 (print (format "coin.get-balance 'Bob' gas cost: {}" [(env-gas)]))
 (coin.get-balance smartpacts.shares.SHARES_ACCOUNT)
@@ -173,7 +173,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2024-03-03T06:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-03-03T06:00:00Z") })
 (env-sigs [{"key": contract-keys.MANAGER, "caps": [ (smartpacts.shares.SHARES-MANAGER) ]}])
 (smartpacts.shares.set-dividend 25.0 2024)
 (coin.get-balance k.ALICE)
@@ -189,7 +189,7 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2025-03-03T06:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2025-03-03T06:00:00Z") })
 (smartpacts.shares.get-pending-dividends)
 (print (format "get-pending-dividends gas cost: {}" [(env-gas)]))
 (commit-tx)
@@ -199,14 +199,14 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2025-03-03T06:30:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2025-03-03T06:30:00Z") })
 (env-sigs [{"key": users-keys.BOB, "caps": [(smartpacts.shares.TRANSFER k.BOB k.ALICE 50.0)]}])
 (smartpacts.shares.transfer k.BOB k.ALICE 50.0)
 (print (format "transfer 'Bob' to 'Alice' 50.0 shares gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.BOB)
-(print (format "shares-details 'Bob' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.shares-details k.ALICE)
-(print (format "shares-details 'Alice' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.BOB)
+(print (format "get-shares-details 'Bob' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.ALICE)
+(print (format "get-shares-details 'Alice' gas cost: {}" [(env-gas)]))
 (coin.get-balance k.ALICE)
 (print (format "coin.get-balance 'Alice' gas cost: {}" [(env-gas)]))
 (coin.get-balance k.BOB)
@@ -220,18 +220,110 @@
 
 (begin-tx)
 (env-gas 0)
-(env-chain-data { "block-time" : (time "2025-03-03T07:00:00Z") })
+(env-chain-data {'chain-id: "0", "block-time" : (time "2025-03-03T07:00:00Z") })
 (smartpacts.shares.get-pending-dividends)
 (print (format "get-pending-dividends gas cost: {}" [(env-gas)]))
 (commit-tx)
 
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "0", "block-time" : (time "2025-03-03T07:30:00Z")})
+(env-hash (hash "burn-create"))
+(smartpacts.shares.get-balance k.ALICE)
+(print (format "get-balance 'Alice' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-balance k.BOB)
+(print (format "get-balance 'Bob' gas cost: {}" [(env-gas)]))
+(env-sigs [{"key": users-keys.BOB, "caps": [(smartpacts.shares.TRANSFER_XCHAIN k.BOB k.ALICE 50.0 "1")]}])
+(smartpacts.shares.transfer-crosschain k.BOB k.ALICE (describe-keyset "smartpacts.alice-keyset") "1" 50.0)
+(print (format "transfer-crosschain 'Bob' to 'Alice' 50.0 to chain 1 shares gas cost: {}" [(env-gas)]))
+
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T08:00:00Z")})
+(continue-pact 1 false (hash "burn-create"))
+(smartpacts.shares.get-balance k.ALICE)
+(print (format "get-balance 'Alice' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-balance k.BOB)
+(print (format "get-balance 'Bob' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T08:30:00Z")})
+(env-sigs [{"key": users-keys.BOB, "caps": [(smartpacts.shares.TRANSFER k.BOB k.FOO 10.0)]}])
+(smartpacts.shares.transfer-create k.BOB k.FOO (describe-keyset "smartpacts.foo-keyset") 10.0)
+(print (format "transfer-create from 'Bob' to 'Foo' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.FOO)
+(print (format "get-shares-details 'Foo' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:00:00Z")})
+(env-sigs [{"key": users-keys.FOO, "caps": [(smartpacts.shares.ROTATE k.FOO)]}])
+(smartpacts.shares.kda-rotate-account k.FOO k.FOO)
+(print (format "kda-rotate-account from 'Bob' to 'Foo' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.FOO)
+(print (format "get-shares-details 'Foo' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:00:00Z")})
+(env-sigs [{"key": users-keys.FOO, "caps": [(smartpacts.shares.ROTATE k.FOO)]}])
+(smartpacts.shares.rotate k.FOO (describe-keyset "smartpacts.bar-keyset"))
+(print (format "rotate guard from 'Foo' to 'Bar' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.FOO)
+(print (format "get-shares-details 'Foo' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:30:00Z")})
+(smartpacts.shares.create-account k.BAR (describe-keyset "smartpacts.bar-keyset"))
+(print (format "Create account 'Bar' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details k.BAR)
+(print (format "get-shares-details 'Bar' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:30:00Z")})
+(smartpacts.shares.details k.BAR)
+(print (format "details 'Bar' gas cost: {}" [(env-gas)]))
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx)
+(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T09:30:00Z")})
+(env-sigs [{"key": contract-keys.MANAGER, "caps": [ (smartpacts.shares.SHARES-MANAGER) ]}])
+(smartpacts.shares.get-balance smartpacts.shares.SHARES_TREASURY_ACCOUNT)
+(smartpacts.shares.get-treasury k.BAR 100.0)
+(print (format "get-treasury transfers 100 to 'Bar' gas cost: {}" [(env-gas)]))
+(smartpacts.shares.get-shares-details smartpacts.shares.SHARES_TREASURY_ACCOUNT)
+(smartpacts.shares.get-shares-details k.BAR)
+(commit-tx)
+
+
+
 ;pending
-;cross chain functions 
-;transfer create -interface
-;create account -interface
-;details -interface
-;rotate - interface
-;kda-rotate
 ;release dividends
-;get pending dividends
 ;utility functions

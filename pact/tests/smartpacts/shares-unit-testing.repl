@@ -320,9 +320,9 @@
 (print (format "get-treasury transfers 100 to 'Bar' gas cost: {}" [(env-gas)]))
 (smartpacts.shares.get-shares-details smartpacts.shares.SHARES_TREASURY_ACCOUNT)
 (smartpacts.shares.get-shares-details k.BAR)
+(coin.get-balance smartpacts.shares.SHARES_TREASURY_ACCOUNT)
+(print (format "no dividends get-balance KDA of SHARES_TREASURY_ACCOUNT gas cost: {}" [(env-gas)]))
 (commit-tx)
-
-
 
 ;pending
 ;release dividends

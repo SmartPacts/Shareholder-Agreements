@@ -324,6 +324,4 @@
 (print (format "no dividends get-balance KDA of SHARES_TREASURY_ACCOUNT gas cost: {}" [(env-gas)]))
 (commit-tx)
 
-;pending
-;release dividends
 ;utility functions

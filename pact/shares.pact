@@ -679,7 +679,7 @@
     , "share-time" := share-time                                                ; The current Share Time Product as "share-time".                                                     ;
     , "last-timestamp" := last-timestamp }                                      ; The last transaction time as last-timestamp.                                                        ;
     (if (contains account                                                       ; If the provided account is contained in the                                                         ;
-      [SHARES_ACCOUNT ALLOCATIONS_ACCOUNT SHARES_TREASURY_ACCOUNT]) true        ; list of accounts of the contract, returns true, if not                                              ;
+      [SHARES_ACCOUNT ALLOCATIONS_ACCOUNT SHARES_TREASURY_ACCOUNT]) "true"      ; list of accounts of the contract, returns true, if not                                              ;
       (let* (                                                                   ; let the following be                                                                                ;
         (timestamp-year (get-year last-timestamp))                              ; "timestamp-year" as the year of last transaction,                                                   ;
         (dividend-year (format "{}" [timestamp-year]))                          ; "dividend-year" as the string of "timestamp-year",                                                  ;
@@ -708,7 +708,10 @@
 (defun get-pending-dividends:[object] ()                                        ; "get-pending-dividends" requires no imputs. Returns list of accounts pending to release dividends.  ;
 @doc "Returns list of pending dividends accounts."                              ; Public Documentation "Returns list of pending dividends accounts.".                                 ;
   (select ledger ["account"]                                                    ; Select from Ledger and return accounts - need to add account to ledger                              ;
-    (where "last-timestamp" (> (get-year-start (now)))))                        ; Where the last timestamp is less than the start of current year.                                    ;
+    (and? (where "last-timestamp" (> (get-year-start (now))))                   ; Where the last timestamp is less than the start of current year                                     ;
+    (and? (where "account" (!= SHARES_ACCOUNT ))                                ; and is not the Shares Account,                                                                      ;
+    (and? (where "account" (!= ALLOCATIONS_ACCOUNT ))                           ; Allocations Account                                                                                 ;
+          (where "account" (!= SHARES_TREASURY_ACCOUNT ))))))                   ; or Treasury account.                                                                                ;
 )                                                                               ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
 ; ========= ALLOCATIONS ======================================================= ; Allocations section                                                                                 ;

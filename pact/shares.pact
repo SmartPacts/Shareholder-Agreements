@@ -626,6 +626,7 @@
                                                                                 ;                                                                                                     ;
 (defun get-treasury (account:string amount:decimal)                             ;                                                                                                     ;
 @doc "Transfers treasury shares to provided account."                           ; Public Documentation "Transfers treasury shares to provided account.".                              ;
+@model [ property (manager-auth-required) ]                                     ; Ensures with a formal verification that the transaction is sigend with manager's keyset.            ;
   (with-capability (SHARES-MANAGER)                                             ; With Capability SHARES-MANAGER                                                                      ;
     (enforce (>= amount 0.0)                                                    ; Enforce the given amount to be greater than zero (0.0).                                             ;
       "Allocation amount must be non-negative")                                 ; returns error message if fails.                                                                     ;

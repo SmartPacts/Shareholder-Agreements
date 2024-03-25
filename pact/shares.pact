@@ -624,7 +624,7 @@
     [proposal effective expiration])                                            ; with "proposal" name "effective" date and "expiration" date values.                                 ;
 )                                                                               ;                                                                                                     ;
                                                                                 ;                                                                                                     ;
-(defun get-treasury (account:string amount:decimal)                             ;                                                                                                     ;
+(defun transfer-treasury (account:string amount:decimal)                        ;                                                                                                     ;
 @doc "Transfers treasury shares to provided account."                           ; Public Documentation "Transfers treasury shares to provided account.".                              ;
 @model [ property (manager-auth-required) ]                                     ; Ensures with a formal verification that the transaction is sigend with manager's keyset.            ;
   (with-capability (SHARES-MANAGER)                                             ; With Capability SHARES-MANAGER                                                                      ;

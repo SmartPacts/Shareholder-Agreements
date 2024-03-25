@@ -21,6 +21,7 @@
   ])
 
 (env-gas 0)
+(env-chain-data {'chain-id: "0", "block-time" : (time "2024-01-01T00:00:00Z") })
 (smartpacts.shares-ipo.initialize)
 (print (format "IPO initialize gas cost: {}" [(env-gas)]))
 (print "get-balance 'IPO'")

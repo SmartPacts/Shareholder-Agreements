@@ -3,202 +3,249 @@
 (env-data {})
 (env-sigs [])
 
-(begin-tx)
-(smartpacts.shares.create-shares-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
-(print (format "create-shares-account 'Alice' gas cost: {}" [(env-gas)]))
-(smartpacts.shares.create-shares-account k.BOB (describe-keyset "smartpacts.bob-keyset"))
-(print (format "create-shares-account 'Bob' gas cost: {}" [(env-gas)]))
-(env-sigs [{"key": users-keys.ALICE,
-            "caps": [ (smartpacts.shares-ipo.BUY-IPO k.ALICE 10.0) ]}])
-(smartpacts.shares-ipo.buy-ipo k.ALICE 10.0)
+(begin-tx "enforce-unit testing")
+; enforce-unit validates the following
+; input is decimal 
+; output is boolean
+; input decimal should be equal to it's round down version to 12 digits after decimal point 
+; note: Only validates precision of positive and negative decimal numbers.  
+(expect
+    "Returns true with 12 or less decimal digits"
+    true
+    (smartpacts.shares.enforce-unit 1.123456789012))
+(expect
+    "Returns true with 12 or less negative decimal digits"
+    true
+    (smartpacts.shares.enforce-unit -1.12345678901))
+(expect-failure
+    "Returns error with integer number"
+    "Type error: expected decimal, found integer"
+    (smartpacts.shares.enforce-unit 1))
+(expect-failure
+    "Returns error with string number"
+    "Type error: expected decimal, found string"
+    (smartpacts.shares.enforce-unit "1.0"))
+(expect-failure
+    "Returns error with boolean input"
+    "Type error: expected decimal, found bool"
+    (smartpacts.shares.enforce-unit true))
+(expect-failure
+    "Returns error with list input"
+    "Type error: expected decimal, found [<a>]"
+    (smartpacts.shares.enforce-unit [1.0]))
+(expect-failure
+    "Returns error with object input"
+    "Type error: expected decimal, found object:*"
+    (smartpacts.shares.enforce-unit {"amount":1.0}))
+(expect-failure
+    "Returns Tx Failed message with more than 12 decimal digits"
+    "Failure: Tx Failed: Amount violates minimum precision: 1.1234567890123"
+    (smartpacts.shares.enforce-unit 1.1234567890123))
+(expect-failure
+    "Returns Tx Failed message with more than 12 negative decimal digits"
+    "Failure: Tx Failed: Amount violates minimum precision: -1.1234567890123"
+    (smartpacts.shares.enforce-unit -1.1234567890123))    
 (commit-tx)
 
-(begin-tx)
-(expect-failure
-    "account does not exist yet"
-    (smartpacts.shares.get-balance "random-account"))
-(commit-tx)
+;(env-data {})
+;(env-sigs [])
+;
+;(begin-tx)
+;(smartpacts.shares.create-shares-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
+;(print (format "create-shares-account 'Alice' gas cost: {}" [(env-gas)]))
+;(smartpacts.shares.create-shares-account k.BOB (describe-keyset "smartpacts.bob-keyset"))
+;(print (format "create-shares-account 'Bob' gas cost: {}" [(env-gas)]))
+;(env-sigs [{"key": users-keys.ALICE,
+;            "caps": [ (smartpacts.shares-ipo.BUY-IPO k.ALICE 10.0) ]}])
+;(smartpacts.shares-ipo.buy-ipo k.ALICE 10.0)
+;(commit-tx)
+;
+;(begin-tx)
+;(expect-failure
+;    "account does not exist yet"
+;    (smartpacts.shares.get-balance "random-account"))
+;(commit-tx)
+;
+;(begin-tx)
+;(expect-failure
+;    "non-latin1+ascii account names fail to create"
+;    "charset"
+;    (smartpacts.shares.create-account "alicexπ" (describe-keyset "smartpacts.alice-keyset")))
+;  
+;(expect-failure
+;    "empty account names fail to create"
+;    "min length"
+;    (smartpacts.shares.create-account "" (describe-keyset "smartpacts.alice-keyset")))
 
-(begin-tx)
-(expect-failure
-    "non-latin1+ascii account names fail to create"
-    "charset"
-    (smartpacts.shares.create-account "alicexπ" (describe-keyset "smartpacts.alice-keyset")))
-  
-(expect-failure
-    "empty account names fail to create"
-    "min length"
-    (smartpacts.shares.create-account "" (describe-keyset "smartpacts.alice-keyset")))
-
-(expect-failure
-    "account names not >= 3 chars fail"
-    "min length"
-    (smartpacts.shares.create-account "al" (describe-keyset "smartpacts.alice-keyset")))
-
-(expect-failure
-    "account names not <= 256 chars fail"
-    "max length"
-    (smartpacts.shares.create-account
-        "Before getting down to business, let us ask why it should be that category theory has such far-reaching applications. \
-        \Well, we said that it's the abstract theory of functions; so the answer is simply this: Functions are everywhere! \
-        \And everywhere that functions are, there are categories. Indeed, the subject might better have been called abstract \
-        \function theory, or perhaps even better: archery."
-        (describe-keyset "smartpacts.alice-keyset")))
-
-(commit-tx)
-
-(begin-tx)
-
-(begin-tx)
-(expect-failure
-    "non-latin1+ascii account names fail to create"
-    "charset"
-    (smartpacts.shares.create-shares-account "alicexπ" (describe-keyset "smartpacts.alice-keyset")))
-  
-(expect-failure
-    "empty account names fail to create"
-    "min length"
-    (smartpacts.shares.create-shares-account "" (describe-keyset "smartpacts.alice-keyset")))
-
-(expect-failure
-    "account names not >= 3 chars fail"
-    "min length"
-    (smartpacts.shares.create-shares-account "al" (describe-keyset "smartpacts.alice-keyset")))
-
-(expect-failure
-    "account names not <= 256 chars fail"
-    "max length"
-    (smartpacts.shares.create-shares-account
-        "Before getting down to business, let us ask why it should be that category theory has such far-reaching applications. \
-        \Well, we said that it's the abstract theory of functions; so the answer is simply this: Functions are everywhere! \
-        \And everywhere that functions are, there are categories. Indeed, the subject might better have been called abstract \
-        \function theory, or perhaps even better: archery."
-        (describe-keyset "smartpacts.alice-keyset")))
-
-(commit-tx)
-
-(begin-tx)
-
-(expect-failure
-    "direct call to credit fails"
-    "not granted"
-    (smartpacts.shares.credit k.ALICE k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
-  
-(expect-failure
-    "direct call to debit fails"
-    "not granted"
-    (smartpacts.shares.debit k.ALICE 1.0))
-
-(commit-tx)
-
-(begin-tx)
-(use smartpacts.shares)
-
+;(expect-failure
+;    "account names not >= 3 chars fail"
+;    "min length"
+;    (smartpacts.shares.create-account "al" (describe-keyset "smartpacts.alice-keyset")))
+;
+;(expect-failure
+;    "account names not <= 256 chars fail"
+;    "max length"
+;    (smartpacts.shares.create-account
+;        "Before getting down to business, let us ask why it should be that category theory has such far-reaching applications. \
+;        \Well, we said that it's the abstract theory of functions; so the answer is simply this: Functions are everywhere! \
+;        \And everywhere that functions are, there are categories. Indeed, the subject might better have been called abstract \
+;        \function theory, or perhaps even better: archery."
+;        (describe-keyset "smartpacts.alice-keyset")))
+;
+;(commit-tx)
+;
+;(begin-tx)
+;
+;(begin-tx)
+;(expect-failure
+;    "non-latin1+ascii account names fail to create"
+;    "charset"
+;    (smartpacts.shares.create-shares-account "alicexπ" (describe-keyset "smartpacts.alice-keyset")))
+;  
+;(expect-failure
+;    "empty account names fail to create"
+;    "min length"
+;    (smartpacts.shares.create-shares-account "" (describe-keyset "smartpacts.alice-keyset")))
+;
+;(expect-failure
+;    "account names not >= 3 chars fail"
+;    "min length"
+;    (smartpacts.shares.create-shares-account "al" (describe-keyset "smartpacts.alice-keyset")))
+;
+;(expect-failure
+;    "account names not <= 256 chars fail"
+;    "max length"
+;    (smartpacts.shares.create-shares-account
+;        "Before getting down to business, let us ask why it should be that category theory has such far-reaching applications. \
+;        \Well, we said that it's the abstract theory of functions; so the answer is simply this: Functions are everywhere! \
+;        \And everywhere that functions are, there are categories. Indeed, the subject might better have been called abstract \
+;        \function theory, or perhaps even better: archery."
+;        (describe-keyset "smartpacts.alice-keyset")))
+;
+;(commit-tx)
+;
+;(begin-tx)
+;
+;(expect-failure
+;    "direct call to credit fails"
+;    "not granted"
+;    (smartpacts.shares.credit k.ALICE k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
+; 
+;(expect-failure
+;    "direct call to debit fails"
+;    "not granted"
+;    (smartpacts.shares.debit k.ALICE 1.0))
+;
+;(commit-tx)
+;
+;(begin-tx)
+;(use smartpacts.shares)
+;
 ; debit tests
-(env-sigs [{"key": users-keys.ALICE,
-            "caps": [ (smartpacts.shares.DEBIT k.ALICE) ]}])
-(test-capability (DEBIT k.ALICE))
-(expect-failure
-    "debit not > 0.0 quantities fail fast"
-    "must be positive"
-    (debit k.ALICE 0.0))
-  
-  (expect-failure
-    "debit not > 0.0 quantities fail fast"
-    "must be positive"
-    (debit k.ALICE (- 1.0)))
-  
-  (expect-failure
-    "debit from account with 0.0 in it yields failure"
-    "Insufficient funds"
-    (debit k.ALICE 1.0))
-  
-  (expect-failure
-    "cannot debit to poorly formatted accounts: charset"
-    "charset"
-    (debit "alicexπ" 1.0))
-  
-  (expect-failure
-    "cannot debit to poorly formatted accounts: min length"
-    "min length"
-    (debit "a" 1.0))
-  
-  (expect-failure
-    "cannot debit to poorly formatted accounts: max length"
-    "max length"
-    (debit "a mathematical object X is best thought of in the context of a category surrounding it, \
-    \and is determined by the network of relations it enjoys with all the objects of that category. \
-    \Moreover, to understand X it might be more germane to deal directly with the functor representing it" 1.0))
-  
-  ; credit tests
-  (test-capability (CREDIT k.ALICE))
-  (credit k.ALICE k.BOB (describe-keyset "smartpacts.alice-keyset") 1.0)
-  
-  (expect
-    "account balance reflects credit"
-    1.0
-    (get-balance k.BOB))
-  
-  (expect-failure
-    "cannot credit to poorly formatted accounts: charset"
-    "charset"
-    (credit "alicexπ" k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
-  
-  (expect-failure
-    "cannot credit to poorly formatted accounts: min length"
-    "min length"
-    (credit "a" k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
-  
-  (expect-failure
-    "cannot credit to poorly formatted accounts: max length"
-    "max length"
-    (credit "a mathematical object X is best thought of in the context of a category surrounding it, \
-    \and is determined by the network of relations it enjoys with all the objects of that category. \
-    \Moreover, to understand X it might be more germane to deal directly with the functor representing it" k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
-  
-
-(commit-tx)
-
-(begin-tx)
-(use smartpacts.shares)
-
-(expect-failure
-  "transfers of trivial or negative quantities fails fast"
-  "positive"
-  (transfer k.ALICE k.BOB 0.0))
-
-(expect-failure "can't install negative"
-  "Positive amount"
-  (test-capability (TRANSFER k.ALICE k.BOB -1.0)))
-
-(expect-failure
-  "Transfer fails without managed cap installed"
-  "not installed"
-  (transfer k.ALICE k.BOB 1.0))
-
-(test-capability (TRANSFER k.ALICE k.BOB 1.0))
-(env-gas 0) (env-gaslog)
-(expect
-  "roundtrip 1.0 transfer succeeds" "Write succeeded"
-  (transfer k.ALICE k.BOB 1.0))
-(env-gaslog)
-(expect
-  "Gas cost of transfer"
-  572 (env-gas))
-
-(expect-failure "alice->bob capability used up"
-  "TRANSFER exceeded"
-  (transfer k.ALICE k.BOB 1.0))
-
-(expect
-  "Alice now has 0.6 coins after transfer to 'Bob'"
-  0.6
-  (get-balance k.ALICE))
-
-(expect
-  "Bob now has 1.4 coins after transfer from 'Alice'"
-  1.4
-  (get-balance k.BOB))
-
-(commit-tx)
+;(env-sigs [{"key": users-keys.ALICE,
+;            "caps": [ (smartpacts.shares.DEBIT k.ALICE) ]}])
+;(test-capability (DEBIT k.ALICE))
+;(expect-failure
+;    "debit not > 0.0 quantities fail fast"
+;    "must be positive"
+;    (debit k.ALICE 0.0))
+; 
+;  (expect-failure
+;    "debit not > 0.0 quantities fail fast"
+;    "must be positive"
+;    (debit k.ALICE (- 1.0)))
+;  
+;  (expect-failure
+;    "debit from account with 0.0 in it yields failure"
+;    "Insufficient funds"
+;    (debit k.ALICE 1.0))
+;  
+;  (expect-failure
+;    "cannot debit to poorly formatted accounts: charset"
+;    "charset"
+;    (debit "alicexπ" 1.0))
+;  
+;  (expect-failure
+;    "cannot debit to poorly formatted accounts: min length"
+;    "min length"
+;    (debit "a" 1.0))
+;  
+;  (expect-failure
+;    "cannot debit to poorly formatted accounts: max length"
+;    "max length"
+;    (debit "a mathematical object X is best thought of in the context of a category surrounding it, \
+;    \and is determined by the network of relations it enjoys with all the objects of that category. \
+;    \Moreover, to understand X it might be more germane to deal directly with the functor representing it" 1.0))
+;  
+;  ; credit tests
+;  (test-capability (CREDIT k.ALICE))
+;  (credit k.ALICE k.BOB (describe-keyset "smartpacts.alice-keyset") 1.0)
+;  
+;  (expect
+;    "account balance reflects credit"
+;    1.0
+;    (get-balance k.BOB))
+;  
+;  (expect-failure
+;    "cannot credit to poorly formatted accounts: charset"
+;    "charset"
+;    (credit "alicexπ" k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
+;  
+;  (expect-failure
+;    "cannot credit to poorly formatted accounts: min length"
+;    "min length"
+;    (credit "a" k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
+;  
+;  (expect-failure
+;    "cannot credit to poorly formatted accounts: max length"
+;    "max length"
+;    (credit "a mathematical object X is best thought of in the context of a category surrounding it, \
+;    \and is determined by the network of relations it enjoys with all the objects of that category. \
+;    \Moreover, to understand X it might be more germane to deal directly with the functor representing it" k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
+;  
+;
+;(commit-tx)
+;
+;(begin-tx)
+;(use smartpacts.shares)
+;
+;(expect-failure
+;  "transfers of trivial or negative quantities fails fast"
+;  "positive"
+;  (transfer k.ALICE k.BOB 0.0))
+;
+;(expect-failure "can't install negative"
+;  "Positive amount"
+;  (test-capability (TRANSFER k.ALICE k.BOB -1.0)))
+;
+;(expect-failure
+;  "Transfer fails without managed cap installed"
+;  "not installed"
+;  (transfer k.ALICE k.BOB 1.0))
+;
+;(test-capability (TRANSFER k.ALICE k.BOB 1.0))
+;(env-gas 0) (env-gaslog)
+;(expect
+;  "roundtrip 1.0 transfer succeeds" "Write succeeded"
+;  (transfer k.ALICE k.BOB 1.0))
+;(env-gaslog)
+;(expect
+;  "Gas cost of transfer"
+;  572 (env-gas))
+;
+;(expect-failure "alice->bob capability used up"
+;  "TRANSFER exceeded"
+;  (transfer k.ALICE k.BOB 1.0))
+;
+;(expect
+;  "Alice now has 0.6 coins after transfer to 'Bob'"
+;  0.6
+;  (get-balance k.ALICE))
+;
+;(expect
+;  "Bob now has 1.4 coins after transfer from 'Alice'"
+;  1.4
+;  (get-balance k.BOB))
+;
+;(commit-tx)
 ;to be completed

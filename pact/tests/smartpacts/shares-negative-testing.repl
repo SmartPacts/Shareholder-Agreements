@@ -119,6 +119,97 @@
 
 (commit-tx)
 
+(env-data {})
+(env-sigs [])
+
+; enforce-reserved ensures the account name of shares has no 'k:' prefix unless is principal account of guard.
+; input account must be string.
+; input guard must be guard.
+; input account must be within validate-account.
+; input account must be principal of guard or has no 'k:' prefix.
+; output must boolean.
+
+(begin-tx "enforce-reserved testing")
+  
+(use smartpacts.shares)
+
+(expect
+    "Returns true if string is principal of guard"
+    true
+    (enforce-reserved k.ALICE (describe-keyset "smartpacts.alice-keyset")))
+
+(expect
+    "Returns true if string has no 'k:' prefix"
+    true
+    (enforce-reserved "alice" (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error if non-latin1+ascii characters in string"
+    "charset"
+    (enforce-reserved "alicexπ" (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error if empty string"
+    "min length"
+    (enforce-reserved "" (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error if string not 3 or more characters"
+    "min length"
+    (enforce-reserved "al" (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error if string not 256 or less characters"
+    "max length"
+    (enforce-reserved
+        "The brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters."
+        (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error with boolean account input"
+    "Type error: expected string, found bool"
+    (enforce-reserved true (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error with list account input"
+    "Type error: expected string, found [<a>]"
+    (enforce-reserved [1.0] (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error with object account input"
+    "Type error: expected string, found object:*"
+    (enforce-reserved {"amount":1.0} (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error with boolean guard input"
+    "Type error: expected guard, found bool"
+    (enforce-reserved "alice" true))
+
+(expect-failure
+    "Returns error with list guard input"
+    "Type error: expected guard, found [<a>]"
+    (enforce-reserved "alice" [1.0]))
+
+(expect-failure
+    "Returns error with object guard input"
+    "Type error: expected guard, found object:*"
+    (enforce-reserved "alice" {"amount":1.0}))
+
+(expect-failure
+    "Returns error with 'k:' prefix on input"
+    "Failure: Tx Failed: Single-key account protocol violation"
+    (enforce-reserved "k:alice" (describe-keyset "smartpacts.alice-keyset")))
+
+(expect-failure
+    "Returns error when account is not principal of guard"
+    "Failure: Tx Failed: Single-key account protocol violation"
+    (enforce-reserved k.ALICE (describe-keyset "smartpacts.bob-keyset")))
+    
+(commit-tx)
+
 ;(env-data {})
 ;(env-sigs [])
 ;

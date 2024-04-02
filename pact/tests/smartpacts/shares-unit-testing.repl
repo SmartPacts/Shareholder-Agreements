@@ -360,18 +360,6 @@
 (env-sigs [])
 
 (begin-tx)
-(env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T13:30:00Z")})
-(use smartpacts.shares)
-(check-reserved "test")
-(print (format "check-reserved bar gas cost: {}" [(env-gas)]))
-(check-reserved k.BAR)
-(print (format "check-reserved k:bar gas cost: {}" [(env-gas)]))
-(commit-tx)
-
-(env-data {})
-(env-sigs [])
-
-(begin-tx)
 (env-chain-data {'chain-id: "1", "block-time" : (time "2025-03-03T14:00:00Z")})
 (use smartpacts.shares)
 (enforce-reserved "bar" (describe-keyset "smartpacts.bar-keyset"))

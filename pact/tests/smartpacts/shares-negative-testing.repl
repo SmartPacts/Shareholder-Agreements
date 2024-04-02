@@ -1,4 +1,20 @@
-(load "../init/init.repl")
+(load "shares-unit-testing.repl")
+
+; Creating and funding share accounts for testing
+
+(begin-tx "environment")
+;(env-chain-data {'chain-id: "0", "block-time" : (time "2023-03-03T00:00:00Z") })
+(use smartpacts.shares)
+;(env-sigs [{"key": contract-keys.MANAGER, "caps": [ (SHARES-MANAGER) ]}])
+;(set-dividend 25.0 2023) 
+;(create-shares-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
+;(print (format "create-shares-account 'Alice' gas cost: {}" [(env-gas)]))
+;(create-shares-account k.BOB (describe-keyset "smartpacts.bob-keyset"))
+;(print (format "create-shares-account 'Bob' gas cost: {}" [(env-gas)]))
+;(env-sigs [{"key": users-keys.ALICE,
+;            "caps": [ (smartpacts.shares-ipo.BUY-IPO k.ALICE 10.0) ]}])
+;(smartpacts.shares-ipo.buy-ipo k.ALICE 10.0)
+(commit-tx)
 
 (env-data {})
 (env-sigs [])
@@ -21,6 +37,11 @@
     "Returns error with negative decimal number"
     "Failure: Tx Failed: Amount must be positive"
     (enforce-unit -1.12345678901))
+
+(expect-failure
+    "Returns error with 0.0 decimal number"
+    "Failure: Tx Failed: Amount must be positive"
+    (enforce-unit 0.0))
 
 (expect-failure
     "Returns error with integer number"
@@ -207,12 +228,116 @@
     "Returns error when account is not principal of guard"
     "Failure: Tx Failed: Single-key account protocol violation"
     (enforce-reserved k.ALICE (describe-keyset "smartpacts.bob-keyset")))
-    
-(commit-tx)
 
-;(env-data {})
-;(env-sigs [])
-;
+; debit outputs a string and, inputs a string and a decimal. 
+
+(env-data {})
+(env-sigs [])
+
+(begin-tx "debit testing")
+(env-chain-data {'chain-id: "0", "block-time" : (time "2025-03-03T00:00:00Z") })
+(use smartpacts.shares)
+
+(expect-failure
+    "direct call to debit fails"
+    "not granted"
+    (debit k.ALICE 1.0))
+    
+(env-sigs [{"key": users-keys.ALICE,
+            "caps": [ (DEBIT k.ALICE) ]},
+            {"key": users-keys.BAR,
+            "caps": [ (DEBIT k.BAR) ]}])
+(test-capability (DEBIT k.ALICE))
+
+(print "(validate-account account)")
+
+(expect-failure
+    "Returns error if non-latin1+ascii characters in string"
+    "charset"
+    (debit "alicexπ" 1.0))
+  
+(expect-failure
+    "Returns error if empty string"
+    "min length"
+    (debit "" 1.0))
+
+(expect-failure
+    "Returns error if string not 3 or more characters"
+    "min length"
+    (debit "al" 1.0))
+
+(expect-failure
+    "Returns error if string not 256 or less characters"
+    "max length"
+    (debit
+        "The brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters." 1.0))
+
+(print "(enforce-unit amount)")
+
+(expect
+    "Returns true with 12 or less positive decimal digits"
+    "Write succeeded"
+    (debit k.ALICE 1.123456789012))
+
+(expect-failure
+    "Returns error with negative decimal number"
+    "Failure: Tx Failed: Amount must be positive"
+    (debit k.ALICE -1.12345678901))
+
+(expect-failure
+    "Returns error with 0.0 decimal number"
+    "Failure: Tx Failed: Amount must be positive"
+    (debit k.ALICE 0.0))
+
+(expect-failure
+    "Returns error with integer number"
+    "Type error: expected decimal, found integer"
+    (debit k.ALICE 1))
+
+(expect-failure
+    "Returns error with string number"
+    "Type error: expected decimal, found string"
+    (debit k.ALICE "1.0"))
+
+(expect-failure
+    "Returns error with boolean input"
+    "Type error: expected decimal, found bool"
+    (debit k.ALICE true))
+
+(expect-failure
+    "Returns error with list input"
+    "Type error: expected decimal, found [<a>]"
+    (debit k.ALICE [1.0]))
+
+(expect-failure
+    "Returns error with object input"
+    "Type error: expected decimal, found object:*"
+    (debit k.ALICE {"amount":1.0}))
+
+(expect-failure
+    "Returns Tx Failed message with more than 12 decimal digits"
+    "Failure: Tx Failed: Amount violates minimum precision: 1.1234567890123"
+    (debit k.ALICE 1.1234567890123))
+
+(expect-failure
+    "Returns Tx Failed message with more than 12 negative decimal digits"
+    "Failure: Tx Failed: Amount must be positive"
+    (debit k.ALICE -1.1234567890123)) 
+(get-balance k.BAR)
+(test-capability (DEBIT k.BAR))
+(expect-failure
+"Returns error if debit account with insufficient funds"
+"Insufficient funds"
+(debit k.BAR 300.0))
+  
+  
+;        (expect-failure
+;            "direct call to credit fails"
+;            "not granted"
+;            (credit k.ALICE k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
 ;(begin-tx)
 ;(use smartpacts.shares) 
 ;(smartpacts.shares.create-shares-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
@@ -288,59 +413,6 @@
 ;
 ;(commit-tx)
 ;
-;(begin-tx)
-;
-;(expect-failure
-;    "direct call to credit fails"
-;    "not granted"
-;    (smartpacts.shares.credit k.ALICE k.ALICE (describe-keyset "smartpacts.alice-keyset") 1.0))
-; 
-;(expect-failure
-;    "direct call to debit fails"
-;    "not granted"
-;    (smartpacts.shares.debit k.ALICE 1.0))
-;
-;(commit-tx)
-;
-;(begin-tx)
-;(use smartpacts.shares)
-;
-; debit tests
-;(env-sigs [{"key": users-keys.ALICE,
-;            "caps": [ (smartpacts.shares.DEBIT k.ALICE) ]}])
-;(test-capability (DEBIT k.ALICE))
-;(expect-failure
-;    "debit not > 0.0 quantities fail fast"
-;    "must be positive"
-;    (debit k.ALICE 0.0))
-; 
-;  (expect-failure
-;    "debit not > 0.0 quantities fail fast"
-;    "must be positive"
-;    (debit k.ALICE (- 1.0)))
-;  
-;  (expect-failure
-;    "debit from account with 0.0 in it yields failure"
-;    "Insufficient funds"
-;    (debit k.ALICE 1.0))
-;  
-;  (expect-failure
-;    "cannot debit to poorly formatted accounts: charset"
-;    "charset"
-;    (debit "alicexπ" 1.0))
-;  
-;  (expect-failure
-;    "cannot debit to poorly formatted accounts: min length"
-;    "min length"
-;    (debit "a" 1.0))
-;  
-;  (expect-failure
-;    "cannot debit to poorly formatted accounts: max length"
-;    "max length"
-;    (debit "a mathematical object X is best thought of in the context of a category surrounding it, \
-;    \and is determined by the network of relations it enjoys with all the objects of that category. \
-;    \Moreover, to understand X it might be more germane to deal directly with the functor representing it" 1.0))
-;  
 ;  ; credit tests
 ;  (test-capability (CREDIT k.ALICE))
 ;  (credit k.ALICE k.BOB (describe-keyset "smartpacts.alice-keyset") 1.0)

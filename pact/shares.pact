@@ -109,13 +109,13 @@
 ; =========== ACCOUNT CONSTANTS =============================================== ; Account Constants                                                                                   ;
                                                                                 ;                                                                                                     ;
 (defconst SHARES_CHARSET CHARSET_LATIN1                                         ; Restricts account names to 'CHARSET_LATIN1' (ISO-8859-1) characters.                                ;
-  "The default coin contract character set")                                    ; Public Documentation "The default coin contract character set"                                      ;
+  "The default share contract character set")                                    ; Public Documentation "The default share contract character set"                                      ;
 (defconst MINIMUM_PRECISION:integer 12                                          ; Sets minimum share precision to 12 decimals                                                         ;
-  "Minimum allowed precision for coin transactions")                            ; Public Documentation "Minimum allowed precision for coin transactions"                              ;
+  "Minimum allowed precision for share transactions")                            ; Public Documentation "Minimum allowed precision for share transactions"                              ;
 (defconst MINIMUM_ACCOUNT_LENGTH:integer 3                                      ; Ensures account names are greart than 3 characters.                                                 ;
-  "Minimum account length admissible for coin accounts")                        ; Public Documentation "Minimum account length admissible for coin accounts"                          ;
+  "Minimum account length admissible for share accounts")                        ; Public Documentation "Minimum account length admissible for share accounts"                          ;
 (defconst MAXIMUM_ACCOUNT_LENGTH:integer 256                                    ; Limits account names to less than 256 characters.                                                   ;
-  "Maximum account name length admissible for coin accounts")                   ; Public Documentation "Maximum account name length admissible for coin accounts"                     ;
+  "Maximum account name length admissible for share accounts")                   ; Public Documentation "Maximum account name length admissible for share accounts"                     ;
                                                                                 ;                                                                                                     ;
 ; =========== ACCOUNT SCHEMAS ================================================= ; Details of Shares Accounts                                                                          ;
                                                                                 ;                                                                                                     ;
@@ -192,7 +192,7 @@
 @doc "Internal function to validate the Account name is in complience."         ; Public Documentation "Internal function to validate the Account name is in complience.".            ;
   (enforce                                                                      ; Enforces the following                                                                              ;
     (is-charset SHARES_CHARSET account)                                         ; The Account conforms to the supported characters.                                                   ;
-    (format "Account does not conform to the coin contract charset: {}"         ; Returns error message if false.                                                                     ;
+    (format "Account does not conform to the share contract charset: {}"         ; Returns error message if false.                                                                     ;
       [account]))                                                               ;                                                                                                     ;
   (let ((account-length (length account)))                                      ; Let "account-length" be the length of the Account.                                                  ;
     (enforce                                                                    ; Enforces the following                                                                              ;

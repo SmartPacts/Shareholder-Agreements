@@ -3,54 +3,122 @@
 (env-data {})
 (env-sigs [])
 
+; The function enforce-unit ensures the amount of shares is within MINIMUM_PRECISION policy. 
+; input must be decimal. 
+; output must be boolean.
+; input must be equal to it's self round down to 12 decimal digits. 
+
 (begin-tx "enforce-unit testing")
-; enforce-unit validates the following
-; input is decimal 
-; output is boolean
-; input decimal should be equal to it's round down version to 12 digits after decimal point 
-; note: Only validates precision of positive and negative decimal numbers.  
+
+(use smartpacts.shares)
+
 (expect
     "Returns true with 12 or less decimal digits"
     true
-    (smartpacts.shares.enforce-unit 1.123456789012))
+    (enforce-unit 1.123456789012))
+
 (expect
     "Returns true with 12 or less negative decimal digits"
     true
-    (smartpacts.shares.enforce-unit -1.12345678901))
+    (enforce-unit -1.12345678901))
+
 (expect-failure
     "Returns error with integer number"
     "Type error: expected decimal, found integer"
-    (smartpacts.shares.enforce-unit 1))
+    (enforce-unit 1))
+
 (expect-failure
     "Returns error with string number"
     "Type error: expected decimal, found string"
-    (smartpacts.shares.enforce-unit "1.0"))
+    (enforce-unit "1.0"))
+
 (expect-failure
     "Returns error with boolean input"
     "Type error: expected decimal, found bool"
-    (smartpacts.shares.enforce-unit true))
+    (enforce-unit true))
+
 (expect-failure
     "Returns error with list input"
     "Type error: expected decimal, found [<a>]"
-    (smartpacts.shares.enforce-unit [1.0]))
+    (enforce-unit [1.0]))
+
 (expect-failure
     "Returns error with object input"
     "Type error: expected decimal, found object:*"
-    (smartpacts.shares.enforce-unit {"amount":1.0}))
+    (enforce-unit {"amount":1.0}))
+
 (expect-failure
     "Returns Tx Failed message with more than 12 decimal digits"
     "Failure: Tx Failed: Amount violates minimum precision: 1.1234567890123"
-    (smartpacts.shares.enforce-unit 1.1234567890123))
+    (enforce-unit 1.1234567890123))
+
 (expect-failure
     "Returns Tx Failed message with more than 12 negative decimal digits"
     "Failure: Tx Failed: Amount violates minimum precision: -1.1234567890123"
-    (smartpacts.shares.enforce-unit -1.1234567890123))    
+    (enforce-unit -1.1234567890123))   
+
+(commit-tx)
+
+(env-data {})
+(env-sigs [])
+
+; validate-account ensures the account name of shares is within SHARES_CHARSET, MINIMUM_ACCOUNT_LENGTH and MAXIMUM_ACCOUNT_LENGTH policies.
+; input must be string.
+; input must be in CHARSET_LATIN1 (ISO-8859-1).
+; input must be 3 or more characters.
+; input must be 256 or less characters.
+; output must boolean.
+
+(begin-tx "validate-account testing")
+  
+(use smartpacts.shares)
+
+(expect-failure
+    "Returns error if non-latin1+ascii characters in string"
+    "charset"
+    (validate-account "alicexπ"))
+  
+(expect-failure
+    "Returns error if empty string"
+    "min length"
+    (validate-account ""))
+
+(expect-failure
+    "Returns error if string not 3 or more characters"
+    "min length"
+    (validate-account "al"))
+
+(expect-failure
+    "Returns error if string not 256 or less characters"
+    "max length"
+    (validate-account
+        "The brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters. \
+        \The quick brown fox jumps over the lazy dog. This is a test sentence to generate 256 characters."))
+
+(expect-failure
+    "Returns error with boolean input"
+    "Type error: expected string, found bool"
+    (validate-account true))
+
+(expect-failure
+    "Returns error with list input"
+    "Type error: expected string, found [<a>]"
+    (validate-account [1.0]))
+
+(expect-failure
+    "Returns error with object input"
+    "Type error: expected string, found object:*"
+    (validate-account {"amount":1.0}))
+
 (commit-tx)
 
 ;(env-data {})
 ;(env-sigs [])
 ;
 ;(begin-tx)
+;(use smartpacts.shares) 
 ;(smartpacts.shares.create-shares-account k.ALICE (describe-keyset "smartpacts.alice-keyset"))
 ;(print (format "create-shares-account 'Alice' gas cost: {}" [(env-gas)]))
 ;(smartpacts.shares.create-shares-account k.BOB (describe-keyset "smartpacts.bob-keyset"))

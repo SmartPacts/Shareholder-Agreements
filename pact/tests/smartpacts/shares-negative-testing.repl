@@ -13,13 +13,13 @@
 (use smartpacts.shares)
 
 (expect
-    "Returns true with 12 or less decimal digits"
+    "Returns true with 12 or less positive decimal digits"
     true
     (enforce-unit 1.123456789012))
 
-(expect
-    "Returns true with 12 or less negative decimal digits"
-    true
+(expect-failure
+    "Returns error with negative decimal number"
+    "Failure: Tx Failed: Amount must be positive"
     (enforce-unit -1.12345678901))
 
 (expect-failure
@@ -54,7 +54,7 @@
 
 (expect-failure
     "Returns Tx Failed message with more than 12 negative decimal digits"
-    "Failure: Tx Failed: Amount violates minimum precision: -1.1234567890123"
+    "Failure: Tx Failed: Amount must be positive"
     (enforce-unit -1.1234567890123))   
 
 (commit-tx)
@@ -72,6 +72,11 @@
 (begin-tx "validate-account testing")
   
 (use smartpacts.shares)
+
+(expect
+    "Returns true if string is within CHARSET_LATIN1 and, 3 and 256 characters"
+    true
+    (validate-account "alice"))
 
 (expect-failure
     "Returns error if non-latin1+ascii characters in string"

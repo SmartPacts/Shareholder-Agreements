@@ -37,6 +37,3 @@ High-level strategic objective that delivers a major outcome or solves a big pro
 
 **Dependencies:**  
 - <Linked initiatives or external factors>
-
-**Labels:**  
-`type:initiative`
